@@ -9,6 +9,7 @@ import (
 )
 
 const invalidCartIDError = "Invalid cart ID"
+const invalidProductIDError = "Invalid product ID"
 
 func CreateCart(c echo.Context) error {
 	db := c.Get("db").(*gorm.DB)
@@ -67,7 +68,7 @@ func AddProductToCart(c echo.Context) error {
 
 	productId, err := strconv.ParseUint(productIdParam, 10, 32)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid product ID"})
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": invalidProductIDError})
 	}
 
 	var product models.Product
@@ -118,7 +119,7 @@ func UpdateProductInCart(c echo.Context) error {
 
 	productId, err := strconv.ParseUint(productIdParam, 10, 32)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid product ID"})
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": invalidProductIDError})
 	}
 
 	quantity, err := strconv.Atoi(quantityParam)
@@ -169,7 +170,7 @@ func DeleteProductFromCart(c echo.Context) error {
 
 	productId, err := strconv.ParseUint(productIdParam, 10, 32)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid product ID"})
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": invalidProductIDError})
 	}
 
 	if err := db.Where("cart_id = ? AND product_id = ?", cartId, productId).Delete(&models.CartProduct{}).Error; err != nil {
