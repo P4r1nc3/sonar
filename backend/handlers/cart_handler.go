@@ -11,6 +11,8 @@ import (
 const invalidCartIDError = "Invalid cart ID"
 const invalidProductIDError = "Invalid product ID"
 
+const cartProductQuery = "cart_id = ? AND product_id = ?"
+
 func CreateCart(c echo.Context) error {
 	db := c.Get("db").(*gorm.DB)
 
@@ -80,7 +82,7 @@ func AddProductToCart(c echo.Context) error {
 	}
 
 	var cartProduct models.CartProduct
-	if err := db.Where("cart_id = ? AND product_id = ?", cartId, productId).First(&cartProduct).Error; err == gorm.ErrRecordNotFound {
+	if err := db.Where(cartProductQuery, cartId, productId).First(&cartProduct).Error; err == gorm.ErrRecordNotFound {
 		cartProduct = models.CartProduct{
 			CartID:    uint(cartId),
 			ProductID: uint(productId),
@@ -133,12 +135,12 @@ func UpdateProductInCart(c echo.Context) error {
 	}
 
 	if quantity == 0 {
-		if err := db.Where("cart_id = ? AND product_id = ?", cartId, productId).Delete(&models.CartProduct{}).Error; err != nil {
+		if err := db.Where(cartProductQuery, cartId, productId).Delete(&models.CartProduct{}).Error; err != nil {
 			return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Could not delete product from cart"})
 		}
 	} else {
 		var cartProduct models.CartProduct
-		if err := db.Where("cart_id = ? AND product_id = ?", cartId, productId).First(&cartProduct).Error; err == gorm.ErrRecordNotFound {
+		if err := db.Where(cartProductQuery, cartId, productId).First(&cartProduct).Error; err == gorm.ErrRecordNotFound {
 			cartProduct = models.CartProduct{
 				CartID:    uint(cartId),
 				ProductID: uint(productId),
@@ -173,7 +175,7 @@ func DeleteProductFromCart(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, echo.Map{"error": invalidProductIDError})
 	}
 
-	if err := db.Where("cart_id = ? AND product_id = ?", cartId, productId).Delete(&models.CartProduct{}).Error; err != nil {
+	if err := db.Where(cartProductQuery, cartId, productId).Delete(&models.CartProduct{}).Error; err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Could not delete product from cart"})
 	}
 
