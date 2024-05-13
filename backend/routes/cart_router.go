@@ -5,11 +5,15 @@ import (
 	"gobackend/handlers"
 )
 
+const cartRoute = "/carts"
+const cartIDRoute = "/carts/:cartId"
+const cartIDProductIDRoute = "/carts/:cartId/products/:productId"
+
 func CartRoutes(e *echo.Echo) {
-	e.POST("/carts", handlers.CreateCart)
-	e.GET("/carts/:cartId", handlers.GetCart)
-	e.DELETE("/carts/:cartId", handlers.DeleteCart)
-	e.POST("/carts/:cartId/products/:productId", handlers.AddProductToCart)
-	e.PUT("/carts/:cartId/products/:productId", handlers.UpdateProductInCart)
-	e.DELETE("/carts/:cartId/products/:productId", handlers.DeleteProductFromCart)
+	e.POST(cartRoute, handlers.CreateCart)
+	e.GET(cartIDRoute, handlers.GetCart)
+	e.DELETE(cartIDRoute, handlers.DeleteCart)
+	e.POST(cartIDProductIDRoute, handlers.AddProductToCart)
+	e.PUT(cartIDProductIDRoute, handlers.UpdateProductInCart)
+	e.DELETE(cartIDProductIDRoute, handlers.DeleteProductFromCart)
 }
