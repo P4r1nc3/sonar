@@ -8,6 +8,8 @@ import (
 	"strconv"
 )
 
+const invalidCartIDError = "Invalid cart ID"
+
 func CreateCart(c echo.Context) error {
 	db := c.Get("db").(*gorm.DB)
 
@@ -25,7 +27,7 @@ func GetCart(c echo.Context) error {
 
 	cartId, err := strconv.ParseUint(cartIdParam, 10, 32)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid cart ID"})
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": invalidCartIDError})
 	}
 
 	var cart models.Cart
@@ -42,7 +44,7 @@ func DeleteCart(c echo.Context) error {
 
 	cartId, err := strconv.ParseUint(cartIdParam, 10, 32)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid cart ID"})
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": invalidCartIDError})
 	}
 
 	if err := db.Where("cart_id = ?", cartId).Delete(&models.Cart{}).Error; err != nil {
@@ -60,7 +62,7 @@ func AddProductToCart(c echo.Context) error {
 
 	cartId, err := strconv.ParseUint(cartIdParam, 10, 32)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid cart ID"})
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": invalidCartIDError})
 	}
 
 	productId, err := strconv.ParseUint(productIdParam, 10, 32)
@@ -111,7 +113,7 @@ func UpdateProductInCart(c echo.Context) error {
 
 	cartId, err := strconv.ParseUint(cartIdParam, 10, 32)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid cart ID"})
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": invalidCartIDError})
 	}
 
 	productId, err := strconv.ParseUint(productIdParam, 10, 32)
@@ -162,7 +164,7 @@ func DeleteProductFromCart(c echo.Context) error {
 
 	cartId, err := strconv.ParseUint(cartIdParam, 10, 32)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid cart ID"})
+		return c.JSON(http.StatusBadRequest, echo.Map{"error": invalidCartIDError})
 	}
 
 	productId, err := strconv.ParseUint(productIdParam, 10, 32)
